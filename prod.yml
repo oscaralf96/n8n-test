@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+
+  nginx:
+    build:
+        context: ./docker/prod/nginx
+        dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: static_volume
+        target: /home/app/static/
+        volume:
+          nocopy: false
+      - ./nginx/ssl:/etc/ssl
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+    restart: always
+    ports:
+      - 8000:80
+
+    # depends_on:
+    #   - backend
+    networks:
+      - net1
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    networks:
+      - net1
+
+
+volumes:
+  static_volume:
+    
+networks:
+  net1:
