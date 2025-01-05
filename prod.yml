@@ -2,6 +2,14 @@ version: '3.9'
 
 services:
 
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    expose:
+      - 5678
+    restart: always
+    networks:
+      - net1
+
   nginx:
     build:
         context: ./docker/prod/nginx
